@@ -19,9 +19,14 @@ import com.glide.slider.library.slidertypes.DefaultSliderView;
 import com.newsapp.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import adapter.GridAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.app.ProgressDialog.show;
 
@@ -64,6 +69,29 @@ public class MainActivity extends AppCompatActivity {
         sliderLayout.setPresetTransformer(SliderLayout.Transformer.Stack);
         sliderLayout.setDuration(4000);
         sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Right_Bottom);
+
+        getHomeData();
+
+    }
+
+    private void getHomeData() {
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Map<String ,String> params = new HashMap<>();
+        params.put("page",1+"");
+        params.put("posts",10+"");
+        Call<Object> call = apiInterface.getHomepageApi(params);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void initViews() {
