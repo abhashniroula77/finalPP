@@ -1,16 +1,16 @@
 package activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ListMenuItemView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.glide.slider.library.SliderLayout;
@@ -18,9 +18,7 @@ import com.glide.slider.library.slidertypes.BaseSliderView;
 import com.glide.slider.library.slidertypes.DefaultSliderView;
 import com.newsapp.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import adapter.GridAdapter;
@@ -28,13 +26,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.app.ProgressDialog.show;
-
 public class MainActivity extends AppCompatActivity {
     GridView gridView;
     SliderLayout sliderLayout;
     Toolbar toolbar;
     GridAdapter gridAdapter;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +39,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
-        //for image loading locally
-        List<Integer> images = new ArrayList<>();
-        images.add(R.drawable.banner_1);
-        images.add(R.drawable.banner_2);
-        images.add(R.drawable.banner_3);
-        images.add(R.drawable.banner_4);
 
-        for (int i = 0; i < images.size(); i++) {
+
+
+
+        getHomeData();
+
+    }
+//creating function for loading data in homepage
+    private void getHomeData() {
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);//getting instance of retrofit
+        Map<String ,String> params = new HashMap<>();
+        params.put("page",1+"");
+        params.put("posts",10+"");
+        Call<HomepageModel> call = apiInterface.getHomepageApi(params);//calling data
+        call.enqueue(new Callback<HomepageModel>() {
+            @Override
+            public void onResponse(Call<HomepageModel> call, Response<HomepageModel> response) {
+                updateDataToHomepage(response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<HomepageModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void updateDataToHomepage(HomepageModel body) {
+
+        for (int i = 0; i < body.getBanners().size(); i++) {
             //creating individual slider
             DefaultSliderView defaultSliderView = new DefaultSliderView(this);
             defaultSliderView.setRequestOption(new RequestOptions().centerCrop());
-            defaultSliderView.image(images.get(i));
+            defaultSliderView.image(body.getBanners().get(i).getImage());
             defaultSliderView.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                 @Override
                 public void onSliderClick(BaseSliderView slider) {
@@ -70,28 +91,6 @@ public class MainActivity extends AppCompatActivity {
         sliderLayout.setDuration(4000);
         sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Right_Bottom);
 
-        getHomeData();
-
-    }
-
-    private void getHomeData() {
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Map<String ,String> params = new HashMap<>();
-        params.put("page",1+"");
-        params.put("posts",10+"");
-        Call<Object> call = apiInterface.getHomepageApi(params);
-        call.enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-
-            }
-        });
-
     }
 
     private void initViews() {
@@ -101,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
         gridView = findViewById(R.id.grid_view);
         gridAdapter = new GridAdapter(this);
         gridView.setAdapter(gridAdapter);
+        recyclerView = findViewById(R.id.recy_news);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     @Override
