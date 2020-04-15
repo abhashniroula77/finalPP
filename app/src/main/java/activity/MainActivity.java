@@ -18,10 +18,13 @@ import com.glide.slider.library.slidertypes.BaseSliderView;
 import com.glide.slider.library.slidertypes.DefaultSliderView;
 import com.newsapp.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import adapter.GridAdapter;
+import adapter.NewsAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     SliderLayout sliderLayout;
     Toolbar toolbar;
     GridAdapter gridAdapter;
+    NewsAdapter newsAdapter;
     RecyclerView recyclerView;
+    List<HomepageModel.News> news;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<HomepageModel> call, Throwable t) {
-
+                Toast.makeText(MainActivity.this,t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
-    private void updateDataToHomepage(HomepageModel body) {
+    private void updateDataToHomepage(HomepageModel body) {//Loading our banner
 
         for (int i = 0; i < body.getBanners().size(); i++) {
             //creating individual slider
@@ -91,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
         sliderLayout.setDuration(4000);
         sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Right_Bottom);
 
+        for(int i = 0; i<body.getNews().size();i++)
+        {
+            news.add(body.getNews().get(i));
+        }
+        recyclerView.setAdapter(newsAdapter);
     }
 
     private void initViews() {
@@ -105,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
+        news = new ArrayList<>();
+        newsAdapter = new NewsAdapter(this,news);
     }
 
     @Override
