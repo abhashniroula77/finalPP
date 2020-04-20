@@ -9,6 +9,20 @@ import java.util.List;
 
 public class HomepageModel {
 
+
+    @SerializedName("CategoryButton")
+    @Expose
+    private List<CategoryButton> categoryButton = null;
+
+    public List<CategoryButton> getCategoryButton() {
+        return categoryButton;
+    }
+
+    public void setCategoryButton(List<CategoryButton> categoryButton) {
+        this.categoryButton = categoryButton;
+    }
+
+
     @SerializedName("Banners")
     @Expose
     private List<Banner> banners = null;
@@ -165,6 +179,9 @@ public class HomepageModel {
         @SerializedName("image")
         @Expose
         private String image;
+
+
+
 
         /**
          * No args constructor for use in serialization
@@ -381,6 +398,67 @@ public class HomepageModel {
         }
 
     }
+
+    public class CategoryButton {
+
+        @SerializedName("cid")
+        @Expose
+        private Integer cid;
+        @SerializedName("name")
+        @Expose
+        private String name;
+        @SerializedName("taxonomy")
+        @Expose
+        private String taxonomy;
+        @SerializedName("color")
+        @Expose
+        private String color;
+        @SerializedName("image")
+        @Expose
+        private String image;
+
+        public Integer getCid() {
+            return cid;
+        }
+
+        public void setCid(Integer cid) {
+            this.cid = cid;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getTaxonomy() {
+            return taxonomy;
+        }
+
+        public void setTaxonomy(String taxonomy) {
+            this.taxonomy = taxonomy;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+    }
+
 
 }
 

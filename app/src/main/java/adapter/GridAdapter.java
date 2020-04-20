@@ -1,6 +1,7 @@
 package adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,40 +11,32 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.newsapp.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import activity.HomepageModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GridAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
     Context context;
-    List<DemoCategory> demoCategories;
+    List<HomepageModel.CategoryButton> categoryButtons;
 
-    public GridAdapter(Context context) {
+    public GridAdapter(Context context, List<HomepageModel.CategoryButton> categoryButtons) {
         this.context = context;
         layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        demoCategories = new ArrayList<>();
-        demoCategories.add(new DemoCategory(R.drawable.star, "Cosmos"));
-        demoCategories.add(new DemoCategory(R.drawable.sport, "Sport"));
-        demoCategories.add(new DemoCategory(R.drawable.technology, "Tech"));
-        demoCategories.add(new DemoCategory(R.drawable.health, "heath"));
-        demoCategories.add(new DemoCategory(R.drawable.world, "world"));
-        demoCategories.add(new DemoCategory(R.drawable.weather, "weather"));
-        demoCategories.add(new DemoCategory(R.drawable.entertainment, "entertainment"));
-        demoCategories.add(new DemoCategory(R.drawable.economics, "economics"));
+        this.categoryButtons = categoryButtons;
 
 
     }
 
     @Override
     public int getCount() {
-        return demoCategories.size();
+        return categoryButtons.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return demoCategories.get(i);
+        return categoryButtons.get(i);
     }
 
     @Override
@@ -64,8 +57,12 @@ public class GridAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        holder.categoryName.setText(demoCategories.get(i).imageName);
-        Glide.with(context).load(demoCategories.get(i).imageId).into(holder.circleImageView);
+        holder.categoryName.setText(categoryButtons.get(i).getName());
+        Glide.with(context).load(categoryButtons.get(i).getImage()).into(holder.circleImageView);
+        if(categoryButtons.get(i).getColor() != null){
+            holder.circleImageView.setCircleBackgroundColor(Color.parseColor(categoryButtons.get(i).getColor()));
+            holder.circleImageView.setBorderColor(Color.parseColor(categoryButtons.get(i).getColor()));
+        }
 
         return view;
     }
@@ -75,14 +72,7 @@ public class GridAdapter extends BaseAdapter {
         TextView categoryName;
     }
 
-    class DemoCategory {
-        Integer imageId;
-
-        public DemoCategory(Integer imageId, String imageName) {
-            this.imageId = imageId;
-            this.imageName = imageName;
-        }
 
         String imageName;
     }
-}
+

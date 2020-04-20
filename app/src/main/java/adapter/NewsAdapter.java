@@ -63,13 +63,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
      HomepageModel.News singleNews = news.get(holder.getAdapterPosition());
      ViewHolder viewHolder = (ViewHolder) holder;
-     viewHolder.newsTitle.setText(removeHtml(singleNews.getTitle()));
-     viewHolder.newsDescp.setText(removeHtml(singleNews.getPostContent()));
+     viewHolder.newsTitle.setText(removeHtml(singleNews.getTitle()).trim());
+     viewHolder.newsDescp.setText(removeHtml(singleNews.getPostContent()).trim());
      if(singleNews.getSource() != null)//preventing our program from null pointer exception
      {
          viewHolder.newsSource.setText(singleNews.getSource());
      }
-     Glide.with(context).load(singleNews.getImage()).into(viewHolder.newsImage);
+     if(singleNews.getImage().length()<=1)
+     {
+         viewHolder.newsSource.setText(singleNews.getSource());
+     }
+     else {
+         viewHolder.newsImage.setVisibility(View.VISIBLE);
+         Glide.with(context).load(singleNews.getImage()).into(viewHolder.newsImage);
+     }
+
+
+
 
     }
 
