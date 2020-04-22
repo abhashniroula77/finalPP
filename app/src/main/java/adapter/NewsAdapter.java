@@ -1,6 +1,7 @@
 package adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.newsapp.R;
 import java.util.List;
 
 import activity.HomepageModel;
+import activity.NewsDetailActivity;
 
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
@@ -88,7 +90,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return news.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         View holder;
         ImageView newsImage;
@@ -103,6 +105,17 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             newsDate = holder.findViewById(R.id.news_date);
             newsViews = holder.findViewById(R.id.news_view);
             newsSource = holder.findViewById(R.id.news_source);
+            holder.setOnClickListener(this);
+
+
+        }
+
+        @Override
+        public void onClick(View v) {//when somebody clicks button this onclick method is called
+            Intent intent = new Intent(context, NewsDetailActivity.class);//linking the activity when the button is clicked
+            intent.putExtra("pid",news.get(getAdapterPosition()).getPid());
+            context.startActivity(intent);
+
 
         }
     }
